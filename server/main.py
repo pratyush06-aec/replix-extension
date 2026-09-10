@@ -23,14 +23,10 @@ app.add_middleware(
 
 # Initialize Groq client for LLM Romanization
 groq_api_key = os.getenv("GROQ_API_KEY")
-if not groq_api_key:
-    print("Warning: GROQ_API_KEY not found in environment variables.")
 groq_client = Groq(api_key=groq_api_key)
 
 # Initialize Soniox client for STT
 soniox_api_key = os.getenv("SONIOX_API_KEY")
-if not soniox_api_key:
-    print("Warning: SONIOX_API_KEY not found in environment variables.")
 soniox_client = SonioxClient(api_key=soniox_api_key) if soniox_api_key else SonioxClient()
 
 @app.post("/transcribe")
@@ -41,16 +37,12 @@ async def transcribe_media(file: UploadFile = File(...)):
     try:
         # Read the uploaded file content into memory
         content = await file.read()
-        print(f"Received file: {file.filename}, size: {len(content)} bytes")
-        
         # Pass bytes directly to Soniox (avoids Windows temp file locking issues)
-        print("Starting Soniox transcription...")
         transcript = soniox_client.stt.transcribe_and_wait_with_tokens(
             file=content,
             filename=file.filename,
             delete_after=True
         )
-        print("Soniox transcription successful.")
         
         # Extract word-level timestamps from Soniox tokens
         formatted_words = []
@@ -83,7 +75,6 @@ async def transcribe_media(file: UploadFile = File(...)):
         english_translation = ""
         if original_text.strip():
             try:
-                print("Generating Romanization via Groq LLM...")
                 chat_completion = groq_client.chat.completions.create(
                     messages=[
                         {
@@ -95,12 +86,11 @@ async def transcribe_media(file: UploadFile = File(...)):
                             "content": original_text
                         }
                     ],
-                    model="openai/gpt-oss-120b",
+                    model="gpt-oss-120b",
                     temperature=0.3
                 )
                 english_translation = chat_completion.choices[0].message.content.strip()
             except Exception as llm_error:
-                print(f"Romanization failed: {llm_error}")
                 english_translation = "Romanization unavailable."
         
         return {
@@ -109,11 +99,8 @@ async def transcribe_media(file: UploadFile = File(...)):
             "english_translation": english_translation
         }
 
-    except Exception as e:
-        print(f"Error processing media: {e}")
-        import traceback
-        traceback.print_exc()
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception:
+        raise HTTPException(status_code=500, detail="An internal server error occurred during processing.")
 
 if __name__ == "__main__":
     import uvicorn

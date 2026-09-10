@@ -100,7 +100,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
         } catch (error) {
-            console.error('Transcription error:', error);
             updateStatus(`Status: Transcription failed. ${error.message}`, 'error');
         } finally {
             generateBtn.disabled = false;
