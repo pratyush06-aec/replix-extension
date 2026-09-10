@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replix Caption POC</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Caption Generator POC</h2>
+        
+        <div class="input-group">
+            <input type="file" id="mediaFile" accept="video/mp4,audio/mp3,audio/wav,audio/mpeg">
+        </div>
+
+        <div id="fileInfo" class="hidden">
+            <p><strong>Selected File:</strong> <span id="fileName"></span></p>
+            <p><strong>Type:</strong> <span id="fileType"></span></p>
+            <p><strong>Size:</strong> <span id="fileSize"></span></p>
+        </div>
+
+        <button id="generateBtn" disabled>Generate Captions</button>
+
+        <div id="statusArea" class="hidden">
+            <p id="statusText">Status: Idle</p>
+        </div>
+
+        <div id="paragraphArea" class="hidden">
+            <h3>Caption Text (Original):</h3>
+            <p id="paragraphOutput"></p>
+        </div>
+
+        <div id="translationArea" class="hidden">
+            <h3>Romanized Text (English Script):</h3>
+            <p id="translationOutput"></p>
+        </div>
+
+        <div id="outputArea" class="hidden">
+            <h3>Word-level Output:</h3>
+            <pre id="jsonOutput"></pre>
+        </div>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+# Node/Python
+node_modules/
+__pycache__/
+*.pyc
+venv/
+.venv/
+env/
+
+# Environment
+.env*
+
+# Uploads/Temp
+uploads/
+*.mp4
+*.mp3
+*.wav
